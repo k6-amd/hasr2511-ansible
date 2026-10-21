@@ -1,0 +1,10 @@
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  children:
+    staging:
+      hosts:
+        10.84.200.32:
+    prod:
+      hosts:
+        10.84.200.81:

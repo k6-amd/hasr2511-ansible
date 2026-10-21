@@ -1,0 +1,34 @@
+---
+- name: mon premier playbook
+  hosts: all
+  become: true
+
+  tasks:
+    - name: secure ssh
+      ansible.builtin.user:
+        name: ansible
+        password_lock: yes
+
+    - name: restriction sshd
+      ansible.builtin.blockinfile:
+        path: /etc/ssh/sshd_config
+        backup: true
+        insertafter: "EOF"
+        block: |
+          Match User ansible
+            AllowUsers ansible@10.84.200.44
+            PasswordAuthentication no
+    - name: restart sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
+    
+    - name: install bind
+      ansible.builtin.dnf:
+        name: bind
+        state: present
+    - name: activate bind
+      ansible.builtin.service:
+        name: named
+        state: started
+        enabled: yes
