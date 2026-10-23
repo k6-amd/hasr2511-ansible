@@ -1,0 +1,21 @@
+---
+- name: Install BIND
+  ansible.builtin.dnf:
+    name: bind
+    state: present
+- name: Enable and start BIND
+  ansible.builtin.service:
+    name: named
+    state: started
+    enabled: true
+
+- name: Deploy BIND configuration
+  ansible.builtin.template:
+    src: named.conf.j2
+    dest: /etc/named.conf
+    backup: true
+    owner: root
+    group: named
+    mode: '0640'
+    validate: named-checkconf %s
+  notify: Restart bind
